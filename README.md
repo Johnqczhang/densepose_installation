@@ -11,6 +11,7 @@ Installing DensePose is not an easy thing except building it from the provided [
 - [GCC-4.9.2](https://gcc.gnu.org/mirrors.html) (Because `libcaffe2.so` installed from `conda` was pre-compiled using exactly this version of gcc)
 - [protobuf-3.5.0](https://github.com/protocolbuffers/protobuf/releases/tag/v3.5.0) (Again, this version is exactly specified in the header of `caffe2.pb.h` from `conda` version)
 - PyTorch dependencies: `conda install numpy pyyaml mkl mkl-include setuptools cffi typing`
+- Caffe2 dependencies: `conda install networkx`
 
 **Notes:**
 
