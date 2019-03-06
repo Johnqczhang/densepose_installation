@@ -25,6 +25,7 @@ Installing DensePose is not an easy thing except building it from the provided [
 - COCOAPI dependencies: `conda install cython matplotlib`
 - Caffe2 dependencies: `conda install pydot future networkx`
 - DensePose dependencies: `conda install opencv mock scipy h5py memory_profiler`
+- [SMPL](http://smpl.is.tue.mpg.de/) model dependencies: `pip install chumpy`
 
 ## Installing Caffe2 (from PyTorch)
 [Caffe2](https://caffe2.ai/) has been merged and integrated into [PyTorch](https://pytorch.org/), which makes its easier to be installed by the following command:
