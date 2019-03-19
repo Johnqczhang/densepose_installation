@@ -13,7 +13,13 @@ Installing DensePose is not an easy thing except building it from the provided [
     * [COCO API](#coco-api)
 * [Caffe2](#caffe2)
 * [DensePose](#densepose)
+    * [Install DensePose](#install-densepose)
+    * [Fetch DensePose data](#fetch-densepose-data)
+* [Setting-up the COCO dataset](#setting-up-the-coco-dataset)
 * [Acknowledgements](#acknowledgements)
+
+
+---
 
 #### Requirements:
 - NVIDIA GPU, Linux, **Python2** (It is not recommended to use Python3)
@@ -150,6 +156,7 @@ To avoid this [issue](https://github.com/facebookresearch/DensePose/issues/185) 
 
 ## Densepose
 
+### Install DensePose
 Clone the Densepose repository:
 
 ```bash
@@ -172,7 +179,7 @@ $ python2 $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
 
 #### Build the custom operators library
 
-1. Edit `$DENSEPOSE/CMakeLists.txt` (Thanks to [@hyousamk's solution](https://github.com/facebookresearch/DensePose/issues/119)), you download [`CMakeLists.txt`](https://github.com/Johnqczhang/densepose_installation/blob/master/CMakeLists.txt) from this repository into your `$DENSEPOSE`, then replace corresponding paths specified in this file with yours:
+1. Edit `$DENSEPOSE/CMakeLists.txt` (Thanks to [@hyousamk's solution](https://github.com/facebookresearch/DensePose/issues/119)), you can download [`CMakeLists.txt`](https://github.com/Johnqczhang/densepose_installation/blob/master/CMakeLists.txt) from this repository into your `$DENSEPOSE`, and replace corresponding paths specified in this file with yours:
     
     ```diff
     diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -253,6 +260,14 @@ $ python2 $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
 
     OK
     ```
+
+### Fetch DensePose data
+Please read [Fetch DensePose data](https://github.com/facebookresearch/DensePose/blob/master/INSTALL.md#fetch-densepose-data) in the official installation documentation.
+
+## Setting-up the COCO dataset
+Please read [Setting-up the COCO dataset](https://github.com/facebookresearch/DensePose/blob/master/INSTALL.md#setting-up-the-coco-dataset) in the official installation documentation.
+
+---
 
 Congratulations! Now you've installed DensePose successfully! :tada:
 
