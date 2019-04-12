@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 # set caffe2 cmake path manually
-set(Caffe2_DIR "/path/to/conda/envs/py2/lib/python2.7/site-packages/torch/share/cmake/Caffe2")
+set(Caffe2_DIR "/path/to/anaconda3/envs/py37/lib/python3.7/site-packages/torch/share/cmake/Caffe2")
 # set cuDNN path
 set(CUDNN_INCLUDE_DIR "/path/to/your/cudnn/include")
 set(CUDNN_LIBRARY "/path/to/your/libcudnn/libcudnn.so")
-include_directories("/path/to/conda/envs/py2/include")
+include_directories("/path/to/anaconda3/envs/py37/include")
 # add static protobuf library
 add_library(libprotobuf STATIC IMPORTED)
-set(PROTOBUF_LIB "/path/to/conda/envs/py2/lib/libprotobuf.a")
+set(PROTOBUF_LIB "/path/to/anaconda3/envs/py37/lib/libprotobuf.a")
 set_property(TARGET libprotobuf PROPERTY IMPORTED_LOCATION "${PROTOBUF_LIB}")
 
 # Find the Caffe2 package.
@@ -43,8 +43,12 @@ file(GLOB CUSTOM_OPS_GPU_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/detectron/ops/*.cu)
 
 # Install custom CPU ops lib.
 add_library(
-     caffe2_detectron_custom_ops SHARED
-     ${CUSTOM_OPS_CPU_SRCS})
+    caffe2_detectron_custom_ops SHARED
+    ${CUSTOM_OPS_CPU_SRCS})
+
+target_include_directories(
+    caffe2_detectron_custom_ops PRIVATE
+    ${CAFFE2_INCLUDE_DIRS})
 
 target_link_libraries(caffe2_detectron_custom_ops caffe2_library libprotobuf)
 install(TARGETS caffe2_detectron_custom_ops DESTINATION lib)
@@ -53,7 +57,7 @@ install(TARGETS caffe2_detectron_custom_ops DESTINATION lib)
 if (CAFFE2_USE_CUDA OR CAFFE2_FOUND_CUDA)
   # Additional -I prefix is required for CMake versions before commit (< 3.7):
   # https://github.com/Kitware/CMake/commit/7ded655f7ba82ea72a82d0555449f2df5ef38594
-  # list(APPEND CUDA_INCLUDE_DIRS -I${CAFFE2_INCLUDE_DIRS})
+  list(APPEND CUDA_INCLUDE_DIRS -I${CAFFE2_INCLUDE_DIRS})
   CUDA_ADD_LIBRARY(
       caffe2_detectron_custom_ops_gpu SHARED
       ${CUSTOM_OPS_CPU_SRCS}
