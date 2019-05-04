@@ -253,7 +253,11 @@ $ python $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
     endif()
     ```
 
-2. Download the source code of [PyTorch](https://github.com/pytorch/pytorch), then copy the folder `$PYTORCH/caffe2/utils/threadpool` into `$TORCH_PATH/lib/include/caffe2/utils/` (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-8-fatal-error-caffe2-utils-threadpool-ThreadPool-h-No-such-file-or-directory)).
+2. Download the source code of [PyTorch](https://github.com/pytorch/pytorch), then copy the following folders into `$TORCH_PATH/lib/include/caffe2/utils/` (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-8-fatal-error-caffe2-utils-threadpool-ThreadPool-h-No-such-file-or-directory) and this [issue](https://github.com/Johnqczhang/densepose_installation/issues/3) which may be related to recent updates of PyTorch):
+    ```bash
+    $ cp -r $PYTORCH/caffe2/utils/threadpool $TORCH_PATH/lib/include/caffe2/utils/
+    $ cp -r $PYTORCH/caffe2/utils/math $TORCH_PATH/lib/include/caffe2/utils/
+    ```
 
 3. Compile the custom operator:
     ```bash
