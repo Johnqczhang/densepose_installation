@@ -7,14 +7,14 @@ Installing DensePose is not an easy thing except building it from the provided [
 * [Requirements](#requirements)
 * [Notes](#notes)
 * [Install Dependencies](#install-dependencies)
-    * [Python Requirements](#python-requirements)
-    * [GCC compiler](#gcc-compiler)
-    * [Google Protocol Buffers (protobuf)](#google-protocol-buffers-protobuf)
+    * [Python Requirements via Conda](#python-requirements-via-conda)
     * [COCO API](#coco-api)
-* [Caffe2](#caffe2)
-    * [Install Caffe2 from Source Code](#install-caffe2-from-source-code)
-    * [Install Caffe2 from Binaries via Conda](#install-caffe2-from-binaries-via-conda)
-    * [Caffe2 Installation Test](#caffe2-installation-test)
+    * [PyTorch & Caffe2](#pytorch-&-caffe2)
+        * [Install from Source Code](#install-from-source-code)
+        * [Install from Binaries via Conda](#install-from-binaries-via-conda)
+        * [Install protobuf package](#install-protobuf-package)
+        * [Caffe2 Installation Test](#caffe2-installation-test)
+    * [GCC compiler (optional)](#gcc-compiler-optional)
 * [DensePose](#densepose)
     * [Install DensePose](#install-densepose)
     * [Fetch DensePose data](#fetch-densepose-data)
@@ -24,106 +24,53 @@ Installing DensePose is not an easy thing except building it from the provided [
 
 ---
 
+#### Updates:
+##### 2019.5.13
+* Upgrade to PyTorch-1.1.0.
+* Upgrade `mkl` to the latest version (2019.3-199) since relevant bug has been fixed.
+* Modify the installation instructions of `protobuf` package.
+
 #### Requirements:
-- NVIDIA GPU, Linux, Python 2/3 (It is highly recommended to install an [Anaconda](https://www.continuum.io/downloads) environment)
-- Caffe2, various standard Python packages, and the COCO API; Instructions for installing these dependencies are found below.
-- [cmake 3.8.2](https://cmake.org/files/), [GCC-4.9.2](https://gcc.gnu.org/mirrors.html), [protobuf-3.5.0](https://github.com/protocolbuffers/protobuf/releases/tag/v3.5.0). These versions of dependencies are exactly specified in caffe2 installed from binaries via conda. If you choose to [install caffe2 from source code](#install-caffe2-from-source-code), then you don't need to install these packages. If you choose to [install caffe2 from binaries via conda](#install-caffe2-from-binaries-via-conda), then follow instructions for installing these dependencies which are found below.
+- NVIDIA GPU, Linux, Python 2/3 (It is highly recommended to install an [Anaconda](https://www.anaconda.com/distribution/#download-section) environment)
+- [Caffe2](#pytorch-&-caffe2), various standard [Python packages](#python-requirements-via-conda)
+- [COCO API](#coco-api)
+- [cmake 3.8.2](https://cmake.org/files/), [GCC-4.9.2](https://gcc.gnu.org/mirrors.html), [protobuf](https://github.com/protocolbuffers/protobuf).
 
 #### Notes:
 - [Detectron operators](https://github.com/pytorch/pytorch/tree/master/modules/detectron) currently do not have CPU implementation; a GPU system is required.
-- The latest [facebookresearch/Detectron](https://github.com/facebookresearch/Detectron) has already enabled Python 3 support, so I updated the detectron module in DensePose to make it compatible in Python 3 and also refined a lot of codes in original DensePose repo. If you prefer Python 3, you can build DensePose using code in this [repo](https://github.com/Johnqczhang/DensePose).
-
+- The latest [facebookresearch/Detectron](https://github.com/facebookresearch/Detectron) has already enabled **Python 3** support, so I updated the detectron module in DensePose to make it compatible in Python 3 and refined a lot of codes in original DensePose repo. If you prefer Python 3, you can build DensePose using code in this [repo](https://github.com/Johnqczhang/DensePose).
 
 #### My System Environment
   * System: CentOS 7.0
   * GPU: NVIDIA Tesla P100
   * CUDA: 9.0 with cuDNN 7.4.2
-  * Python: 2.7.15 / 3.7, based on conda 4.6.11. (I installed [Anaconda3](https://www.anaconda.com/distribution/#download-section) and created an environment with a specified python version by `conda create -n env_name python=x.x` (`x.x` can be 2.7/3.5/3.6/3.7). For convenience in the following instructions, set `CONDA_ENV_PATH=/path/to/anaconda3/envs/env_name`.
+  * Python: 3.7, based on conda 4.6.14.
+
 
 ## Install Dependencies
 
-### Python Requirements
+### Python Requirements (via Conda)
+It is recommended to create a python environment with a speficied python version (e.g., 2.7/3.6/3.7) via [Conda](https://www.anaconda.com/distribution/#download-section) by this following command,
+```bash
+$ conda create -y -n your_env_name python=x.x
+```
+Note that instructions like `x.x` or `pythonx.x` (below) indicate the specific python version you installed in your created conda environment, which can be 2.7/3.6/3.7 or any other valid python version.
+
+For convenience in the following instructions, we set some environment variables accordingly: 
+```bash
+export CONDA_ENV_PATH=/path/to/anaconda3/envs/your_env_name
+export CONDA_PKGS_PATH=/path/to/anaconda3/envs/your_env_name/lib/pythonx.x/site-packages
+```
+
+Then, install the following python packages under the created environment:
 - PyTorch: `conda install -y numpy setuptools cffi typing pyyaml=3.13 mkl=2019.1 mkl-include=2019.1`
 - COCOAPI: `conda install -y cython matplotlib`
 - Caffe2: `conda install -y pydot future networkx`
-- Caffe2 ([from source](#install-caffe2-from-source-code)): `conda install protobuf=3.6.1`
 - DensePose: `conda install -y opencv mock scipy h5py`
 - [SMPL](http://smpl.is.tue.mpg.de/) model: `pip install -y chumpy`
 
-By default, conda will install the latest version of packages. However, package `pyyaml` with version 4.x may cause a `ConstructorError` when loading a `.yaml` file according to this [issue](https://github.com/facebookresearch/DensePose/issues/216), current solution is downgrade `pyyaml` to version 3.13 (>= 3.12).
+By default, conda will install the latest version of these packages. However, package `pyyaml` with version 4.x may cause a `ConstructorError` when loading a `.yaml` file according to this [issue](https://github.com/facebookresearch/DensePose/issues/216), current solution is downgrade `pyyaml` to version 3.13 (>= 3.12).
 
-The latest `mkl` packages (version: 2019.3) may has some bugs which caused errors when building PyTorch from source in my environment. So I downgrade it to a previous version.
-
-
-### GCC compiler    
-So far, [GCC-4.9.2](https://ftp.gnu.org/gnu/gcc/gcc-4.9.2/) was used to compile caffe2 library in the precompiled conda package (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-10-Undefined-symbol-ZN6caffe219CPUOperatorRegistryB5cxx11Ev)). You can firstly [install caffe2](#caffe2) and run the following command to see which version of GCC was used in the precompiled `libcaffe2.so` library like the following output,
-```bash
-$ strings -a $TORCH_PATH/lib/libcaffe2.so | grep "GCC: ("
-$ GCC: (GNU) 4.9.2 20150212 (Red Hat 4.9.2-6)`
-```
-#### Install GCC
-Download [GCC-4.9.2](https://ftp.gnu.org/gnu/gcc/gcc-4.9.2/) source code and build it by the following commands,
-```bash
-$ mkdir /path/to/gcc-4.9.2/build && cd /path/to/gcc-4.9.2/build
-$ ../configure --prefix=/path/to/build --enable-checking=release --enable-languages=c,c++ --disable-multilib
-$ make
-$ make install
-$ cd bin/
-$ ln -s gcc cc  # create a symbol link 'cc' for 'gcc'
-$ cp -r include/c++ $CONDA_ENV_PATH/include
-```
-
-After installing gcc-4.9.2 successfully, add `/path/to/gcc-4.9.2/build/bin` and `/path/to/gcc-4.9.2/build/lib64` to your `$PATH` and `$LD_LIBRARY_PATH` environment variables, respectively.
-
-### Google Protocol Buffers (protobuf)
-So far, [profobuf-3.5.0](https://github.com/protocolbuffers/protobuf/releases/tag/v3.5.0) was specified in caffe2 installed from binaries via conda. It is highly recommended to firstly [install caffe2](#caffe2) and check which version of protobuf was specified in the header of `$TORCH_PATH/lib/include/caffe2/proto/caffe2.pb.h` like the following example, then install the corresponding verison of protobuf like the way below:
-
-```h
-// Generated by the protocol buffer compiler.  DO NOT EDIT!
-// source: caffe2/proto/caffe2.proto
-
-#ifndef PROTOBUF_caffe2_2fproto_2fcaffe2_2eproto__INCLUDED
-#define PROTOBUF_caffe2_2fproto_2fcaffe2_2eproto__INCLUDED
-
-#include <string>
-
-#include <google/protobuf/stubs/common.h>
-
-#if GOOGLE_PROTOBUF_VERSION < 3005000
-#error This file was generated by a newer version of protoc which is
-#error incompatible with your Protocol Buffer headers.  Please update
-#error your headers.
-#endif
-#if 3005000 < GOOGLE_PROTOBUF_MIN_PROTOC_VERSION
-#error This file was generated by an older version of protoc which is
-#error incompatible with your Protocol Buffer headers.  Please
-#error regenerate this file with a newer version of protoc.
-#endif
-```
-
-#### Install protobuf C/C++ API
-```bash
-$ mkdir /path/to/protobuf-3.5.0/build && cd /path/to/protobuf-3.5.0/build
-$ ../configure --prefix=/path/to/build CXXFLAGS="-fPIC"
-$ make
-$ make install
-```
-
-Like what we did in the GCC installation, after the installation is done, add `/path/to/protobuf-3.5.0/build/bin` and `/path/to/protobuf-3.5.0/build/lib` to your `$PATH` and `$LD_LIBRARY_PATH` environment variables. You can also copy these built files to the corresponding directories of your conda environment which will only take effect within the created environment (I did in this way),
-```bash
-$ cd /path/to/protobuf-3.5.0/build
-$ cp bin/protoc $CONDA_ENV_PATH/bin
-$ cp -r include/google $CONDA_ENV_PATH/include
-$ cp lib/libproto* $CONDA_ENV_PATH/lib
-```
-
-#### Install protobuf Python API
-Before this installation, make sure that you're in the correct python environment (i.e., `env_name`).
-```bash
-$ cd /path/to/protobuf-3.5.0/python
-$ python setup.py build
-$ python setup.py install
-```
 
 ### [COCO API](https://github.com/cocodataset/cocoapi)
 
@@ -137,25 +84,55 @@ $ make install
 Note that instructions like `# COCOAPI=/path/to/install/cocoapi` indicate that you should pick a path where you'd like to have the software cloned and then set an environment variable (`COCOAPI` in this case) accordingly.
 
 
-## Caffe2
-[Caffe2](https://caffe2.ai/) has been merged and integrated into [PyTorch](https://pytorch.org/), you can install it either from binaries via Conda or from source code.
-### Install Caffe2 from Source Code
+### PyTorch & Caffe2
+[Caffe2](https://caffe2.ai/) has been merged and integrated into [PyTorch](https://pytorch.org/), you can install them either from source code or from binaries via Conda.
+
+#### Install from Source Code
 See [Install PyTorch from Source](https://github.com/pytorch/pytorch#from-source).
 
-If you are installing from source, by default it will also build a protobuf (`protobuf-3.6.1` in my case), so you don't need to [install protobuf-3.5.0](#google-protocol-buffers-protobuf) from source code as specified above but just simply run this command `conda install protobuf=3.6.1`.
+#### Install from Binaries via Conda
+Commands to install from binaries via Conda or pip wheels are on [PyTorch website](https://pytorch.org). E.g. (in my case), 
+```bash
+$ conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
+```
 
-### Install Caffe2 from Binaries via Conda
-Commands to install from binaries via Conda or pip wheels are on PyTorch website: https://pytorch.org
+#### Install protobuf package
+When the installation of pytorch & caffe2 is done, the python API package (named `torch` and `caffe2`) is installed in `$CONDA_PKGS_PATH`, for convenience in the following instructions, set some environment variables:
+```bash
+export $TORCH_PATH=$CONDA_PKGS_PATH/torch
+export $CAFFE2_INCLUDE_PATH=$TORCH_PATH/include/caffe2
+```
 
-### Caffe2 Installation Test
-If you install pytorch and caffe2 successfully, you will see there are two folders named `torch` and `caffe2` in your conda packages directory (`$CONDA_ENV_PATH/lib/pythonx.x/site-packages/`)
-For convenience, set `TORCH_PATH=$CONDA_ENV_PATH/lib/pythonx.x/site-packages/torch`.
+Before installing protobuf, you need to check which version (currently, 3.6.1) is specified in the header of `$CAFFE2_INCLUDE_PATH/proto/caffe2.pb.h` like the following code,
+```h
+// Generated by the protocol buffer compiler.  DO NOT EDIT!
+// source: caffe2/proto/caffe2.proto
 
-~~Adjust your `PYTHONPATH` environment variable to include this location: `$TORCH_PATH/lib` (referred to the [issue: Detectron ops lib not found](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-2-Detectron-ops-lib-not-found)). If this doesn't work when [setting up python modules of densepose](#densepose), try creating a symbol link to this path in the root directory of your densepose: `ln -s $TORCH_PATH/lib /path/to/your/densepose/lib`~~
+#ifndef PROTOBUF_INCLUDED_caffe2_2fproto_2fcaffe2_2eproto
+#define PROTOBUF_INCLUDED_caffe2_2fproto_2fcaffe2_2eproto
 
-The issue deleted above has been solved by the official [Detectron](https://github.com/facebookresearch/Detectron/commit/df0e4972de432841fa0bf3a99ef86ac5b99471b7#diff-c9dcb56d00bdc377a5cde4915aba114f).
+#include <string>
 
-Please ensure that your Caffe2 installation and [protobuf installation](#google-protocol-buffers-protobuf) was successful before proceeding by running the following commands and checking their output as directed in the comments.
+#include <google/protobuf/stubs/common.h>
+
+#if GOOGLE_PROTOBUF_VERSION < 3006001
+#error This file was generated by a newer version of protoc which is
+#error incompatible with your Protocol Buffer headers.  Please update
+#error your headers.
+#endif
+#if 3006001 < GOOGLE_PROTOBUF_MIN_PROTOC_VERSION
+#error This file was generated by an older version of protoc which is
+#error incompatible with your Protocol Buffer headers.  Please
+#error regenerate this file with a newer version of protoc.
+#endif
+```
+
+Then, install protobuf via conda by `conda install protobuf=3.6.1` accordingly.
+
+#### Caffe2 Installation Test
+~~Adjust your `PYTHONPATH` environment variable to include this location: `$TORCH_PATH/lib` (referred to the [issue: Detectron ops lib not found](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-2-Detectron-ops-lib-not-found)). If this doesn't work when [setting up python modules of densepose](#densepose), try creating a symbol link to this path in the root directory of your densepose: `ln -s $TORCH_PATH/lib /path/to/your/densepose/lib`~~ (This issue has been solved by the official [Detectron](https://github.com/facebookresearch/Detectron/commit/df0e4972de432841fa0bf3a99ef86ac5b99471b7#diff-c9dcb56d00bdc377a5cde4915aba114f)).
+
+Please ensure that your Caffe2 installation and [protobuf installation](#install-protobuf-package) was successful before proceeding by running the following commands and checking their output as directed in the comments.
 
 ```bash
 # To check if Caffe2 build was successful
@@ -166,7 +143,31 @@ $ python -c 'from caffe2.python import core' 2>/dev/null && echo "Success" || ec
 $ python -c 'from caffe2.python import workspace; print(workspace.NumCudaDevices())'
 ```
 
-To avoid this [issue](https://github.com/facebookresearch/DensePose/issues/185) in case multiple CUDA libraries have been installed in your system and the symbol link `/usr/local/cuda` doesn't link to the specific version of CUDA that you're using, it is recommended to edit `$TORCH_PATH/share/cmake/Caffe2/Caffe2Target.cmake` in which replace `/usr/local/cuda/lib64/libculibos.a` with `/usr/local/cuda-x.x/lib64/libculibos.a`, otherwise it may trigger a linking error when [installing the custom DensePose operator](#build-the-custom-operators-library). **This issue only occurs in which the caffe2 was installed from binaries**.
+To avoid this [issue](https://github.com/facebookresearch/DensePose/issues/185) in case multiple CUDA libraries have been installed in your system and the symbol link `/usr/local/cuda` doesn't link to the specific version of CUDA that you're using, you need to replace `/usr/local/cuda/lib64/libculibos.a` with `/usr/local/cuda-x.x/lib64/libculibos.a` in `$TORCH_PATH/share/cmake/Caffe2/Caffe2Target.cmake`, otherwise it may trigger a linking error when [installing the custom DensePose operator](#build-the-custom-operators-library). (**This issue only occurs in which the caffe2 was installed from binaries via conda**).
+
+
+### GCC compiler (optional)
+If Caffe2 was installed via Conda, then you need to make sure that you have the feasible GCC compiler in your system before building densepose (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-10-Undefined-symbol-ZN6caffe219CPUOperatorRegistryB5cxx11Ev)). 
+So far, [GCC-4.9.2](https://ftp.gnu.org/gnu/gcc/gcc-4.9.2/) has been successfully tested to be used to compile custom operators in densepose which depends on Caffe2 libraries. You can also run the following command to see which versions of GCC are supported in the precompiled `libcaffe2.so` library like the following output,
+```bash
+$ strings -a $TORCH_PATH/lib/libcaffe2.so | grep "GCC: ("
+$ # Output from the command above
+$ GCC: (GNU) 4.9.2 20150212 (Red Hat 4.9.2-6)`
+```
+
+#### Install GCC
+Download [GCC-4.9.2](https://ftp.gnu.org/gnu/gcc/gcc-4.9.2/) source code and build it by the following commands,
+```bash
+$ mkdir /path/to/gcc-4.9.2/build && cd /path/to/gcc-4.9.2/build
+$ ../configure --prefix=/path/to/build --enable-checking=release --enable-languages=c,c++ --disable-multilib
+$ make
+$ make install
+$ cd bin/
+$ ln -s gcc cc  # create a symbol link 'cc' for 'gcc'
+$ cp -r include/c++ $CONDA_ENV_PATH/include
+```
+
+After installing gcc-4.9.2 successfully, add `/path/to/gcc-4.9.2/build/bin` and `/path/to/gcc-4.9.2/build/lib64` to your `$PATH` and `$LD_LIBRARY_PATH` environment variables, respectively.
 
 
 ## Densepose
@@ -253,17 +254,16 @@ $ python $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
     endif()
     ```
 
-2. Download the source code of [PyTorch](https://github.com/pytorch/pytorch), then copy the following folders into `$TORCH_PATH/lib/include/caffe2/utils/` (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-8-fatal-error-caffe2-utils-threadpool-ThreadPool-h-No-such-file-or-directory) and this [issue](https://github.com/Johnqczhang/densepose_installation/issues/3) which may be related to recent updates of PyTorch):
+2. Download the source code of [PyTorch](https://github.com/pytorch/pytorch), then copy the following folders into `$CAFFE2_INCLUDE_PATH/utils/` (referred to this [issue](http://linkinpark213.com/2018/11/18/densepose-minesweeping/#2-8-fatal-error-caffe2-utils-threadpool-ThreadPool-h-No-such-file-or-directory) and this [issue](https://github.com/Johnqczhang/densepose_installation/issues/3) which may be related to recent updates of PyTorch):
     ```bash
-    $ cp -r $PYTORCH/caffe2/utils/threadpool $TORCH_PATH/lib/include/caffe2/utils/
-    $ cp -r $PYTORCH/caffe2/utils/math $TORCH_PATH/lib/include/caffe2/utils/
+    $ cp -r $PYTORCH/caffe2/utils/threadpool $CAFFE2_INCLUDE_PATH/utils/
+    $ cp -r $PYTORCH/caffe2/utils/math $CAFFE2_INCLUDE_PATH/utils/
     ```
 
 3. Compile the custom operator:
     ```bash
     $ cd $DENSEPOSE/build
-    $ cmake ..
-    $ make
+    $ cmake .. && make
     ```
 
 4. Check that the custom operator tests pass:
