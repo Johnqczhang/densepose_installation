@@ -1,15 +1,15 @@
 # Installing DensePose
 
-Installing DensePose is not an easy thing except building it from the provided [Dockerfile](https://github.com/facebookresearch/DensePose/blob/master/docker/Dockerfile). Here, I provided an installation guide based on the official [DensePose Installation](https://github.com/facebookresearch/DensePose/blob/master/INSTALL.md) and an [installation guide](http://linkinpark213.com/2018/11/18/densepose-minesweeping/) provided by [@linkinpark213](https://github.com/linkinpark213).
+Installing DensePose is not an easy thing except [building it in a docker container](https://github.com/facebookresearch/DensePose/blob/master/INSTALL.md#docker-image). Here, I provided an installation guide based on the official [DensePose Installation](https://github.com/facebookresearch/DensePose/blob/master/INSTALL.md) and an [installation guide](http://linkinpark213.com/2018/11/18/densepose-minesweeping/) provided by [@linkinpark213](https://github.com/linkinpark213).
 
 
 ### Contents
 * [Requirements](#requirements)
 * [Notes](#notes)
 * [Install Dependencies](#install-dependencies)
-    * [Python Requirements via Conda](#python-requirements-via-conda)
+    * [Python Requirements (via Conda)](#python-requirements-via-conda)
     * [COCO API](#coco-api)
-    * [PyTorch & Caffe2](#pytorch-&-caffe2)
+    * [PyTorch & Caffe2](#pytorch--caffe2)
         * [Install from Source Code](#install-from-source-code)
         * [Install from Binaries via Conda](#install-from-binaries-via-conda)
         * [Install protobuf package](#install-protobuf-package)
@@ -32,7 +32,7 @@ Installing DensePose is not an easy thing except building it from the provided [
 
 #### Requirements:
 - NVIDIA GPU, Linux, Python 2/3 (It is highly recommended to install an [Anaconda](https://www.anaconda.com/distribution/#download-section) environment)
-- [Caffe2](#pytorch-&-caffe2), various standard [Python packages](#python-requirements-via-conda)
+- [Caffe2](#pytorch--caffe2), various standard [Python packages](#python-requirements-via-conda)
 - [COCO API](#coco-api)
 - [cmake 3.8.2](https://cmake.org/files/), [GCC-4.9.2](https://gcc.gnu.org/mirrors.html), [protobuf](https://github.com/protocolbuffers/protobuf).
 
@@ -50,7 +50,7 @@ Installing DensePose is not an easy thing except building it from the provided [
 ## Install Dependencies
 
 ### Python Requirements (via Conda)
-It is recommended to create a python environment with a speficied python version (e.g., 2.7/3.6/3.7) via [Conda](https://www.anaconda.com/distribution/#download-section) by this following command,
+It is recommended to create a python environment with a speficied python version (e.g., 2.7/3.6/3.7) via Conda by this following command,
 ```bash
 $ conda create -y -n your_env_name python=x.x
 ```
@@ -190,7 +190,7 @@ $ cd $DENSEPOSE
 $ python setup.py develop
 ```
 
-Check that Detectron tests pass (e.g. for [`SpatialNarrowAsOp test`](tests/test_spatial_narrow_as_op.py)):
+Check that Detectron tests pass (e.g. for [`SpatialNarrowAsOp test`](https://github.com/facebookresearch/DensePose/blob/master/detectron/tests/test_spatial_narrow_as_op.py)):
 
 ```bash
 $ python $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
