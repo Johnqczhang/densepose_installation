@@ -99,8 +99,8 @@ $ conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
 #### Install protobuf package
 When the installation of pytorch & caffe2 is done, the python API package (named `torch` and `caffe2`) is installed in `$CONDA_PKGS_PATH`, for convenience in the following instructions, set some environment variables:
 ```bash
-export $TORCH_PATH=$CONDA_PKGS_PATH/torch
-export $CAFFE2_INCLUDE_PATH=$TORCH_PATH/include/caffe2
+export TORCH_PATH=$CONDA_PKGS_PATH/torch
+export CAFFE2_INCLUDE_PATH=$TORCH_PATH/include/caffe2
 ```
 
 Before installing protobuf, you need to check which version (currently, 3.6.1) is specified in the header of `$CAFFE2_INCLUDE_PATH/proto/caffe2.pb.h` like the following code,
