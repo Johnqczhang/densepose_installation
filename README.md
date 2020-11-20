@@ -67,7 +67,7 @@ Then, install the following python packages under the created environment:
 - COCOAPI: `conda install -y cython matplotlib`
 - Caffe2: `conda install -y pydot future networkx`
 - DensePose: `conda install -y opencv mock scipy h5py`
-- [SMPL](http://smpl.is.tue.mpg.de/) model: `pip install -y chumpy`
+- [SMPL](http://smpl.is.tue.mpg.de/) model: `pip install chumpy`
 
 By default, conda will install the latest version of these packages. However, package `pyyaml` with version 4.x may cause a `ConstructorError` when loading a `.yaml` file according to this [issue](https://github.com/facebookresearch/DensePose/issues/216), current solution is downgrade `pyyaml` to version 3.13 (>= 3.12).
 
