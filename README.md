@@ -25,6 +25,10 @@ Installing DensePose is not an easy thing except [building it in a docker contai
 ---
 
 #### Updates:
+
+#### 2022.4.8
+* Add fixes for GCC Compile on Ubuntu 18.04 
+
 ##### 2019.5.13
 * Upgrade to PyTorch-1.1.0.
 * Upgrade `mkl` to the latest version (2019.3-199) since relevant bug has been fixed.
@@ -159,13 +163,20 @@ $ GCC: (GNU) 4.9.2 20150212 (Red Hat 4.9.2-6)`
 Download [GCC-4.9.2](https://ftp.gnu.org/gnu/gcc/gcc-4.9.2/) source code and build it by the following commands,
 ```bash
 $ mkdir /path/to/gcc-4.9.2/build && cd /path/to/gcc-4.9.2/build
-$ ../configure --prefix=/path/to/build --enable-checking=release --enable-languages=c,c++ --disable-multilib
+$ ../configure --prefix=/path/to/build --enable-default-pie --enable-checking=release --enable-languages=c,c++ --disable-multilib
 $ make
 $ make install
 $ cd bin/
 $ ln -s gcc cc  # create a symbol link 'cc' for 'gcc'
 $ cp -r include/c++ $CONDA_ENV_PATH/include
 ```
+If you have this error when `make` command running:
+
+> error: dereferencing pointer to incomplete type ‘struct ucontex_t’
+       sc = (struct sigcontext *) (void *) &uc_->uc_mcontext;
+       
+Open file /path/to/gcc-4.9.2/build/x86_64-unknown-linux-gnu/libgcc/md-unwind-support.h and at line 65 edit:
+> "struct ucontex_t *uc_ = context->cfa;" change to "ucontext_t *uc_ = context->cfa;"
 
 After installing gcc-4.9.2 successfully, add `/path/to/gcc-4.9.2/build/bin` and `/path/to/gcc-4.9.2/build/lib64` to your `$PATH` and `$LD_LIBRARY_PATH` environment variables, respectively.
 
